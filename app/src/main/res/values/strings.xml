@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">DictionaryEdit</string>
+    <string name="menu_item_show_subtitle">Show Subtitle</string>
+    <string name="menu_item_hide_subtitle">Hide Subtitle</string>
+</resources>
