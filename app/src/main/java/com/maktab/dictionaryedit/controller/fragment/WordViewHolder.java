@@ -11,7 +11,8 @@ import com.maktab.dictionaryedit.R;
 
 class WordViewHolder extends RecyclerView.ViewHolder {
     TextView tvEnword, tvFaword;
-    ImageView editWord,deleteWord;
+    ImageView editWord,deleteWord,share_btn;
+
 
     WordViewHolder(View itemView) {
         super(itemView);
@@ -19,6 +20,7 @@ class WordViewHolder extends RecyclerView.ViewHolder {
         tvFaword = itemView.findViewById(R.id.Faword);
         editWord=itemView.findViewById(R.id.editWord);
        deleteWord=itemView.findViewById(R.id.deleteWord);
+       share_btn=itemView.findViewById(R.id.share_icon);
 
 
 

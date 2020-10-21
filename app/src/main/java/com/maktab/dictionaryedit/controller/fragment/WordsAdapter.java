@@ -5,15 +5,18 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -25,6 +28,7 @@ import com.maktab.dictionaryedit.controller.activity.MainActivity;
 import com.maktab.dictionaryedit.database.DatabaseAccess;
 import com.maktab.dictionaryedit.model.Words;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 
@@ -34,6 +38,7 @@ public class WordsAdapter extends RecyclerView.Adapter<WordViewHolder>
     private ArrayList<Words> listWords;
     private ArrayList<Words> mArrayList;
     DatabaseAccess databaseAccess;
+    Words words;
 
 
     public WordsAdapter(Context context, ArrayList<Words> listWords) {
@@ -51,7 +56,7 @@ public class WordsAdapter extends RecyclerView.Adapter<WordViewHolder>
 
     @Override
     public void onBindViewHolder(WordViewHolder holder, int position) {
-        final Words words = listWords.get(position);
+        words = listWords.get(position);
         Typeface atf = Typeface.createFromAsset(context.getAssets(), "font/naz.ttf");
         holder.tvFaword.setTypeface(atf);
         holder.tvFaword.setTypeface(atf);
@@ -67,10 +72,10 @@ public class WordsAdapter extends RecyclerView.Adapter<WordViewHolder>
                 editTaskDialog(words);
             }
         });
-       holder.deleteWord.setOnClickListener(new View.OnClickListener() {
+        holder.deleteWord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (MainActivity.lang==false)
+                if (MainActivity.lang == false)
                     databaseAccess.deleteEnglish(words);
                 else
                     databaseAccess.deletePersian(words);
@@ -80,9 +85,43 @@ public class WordsAdapter extends RecyclerView.Adapter<WordViewHolder>
             }
         });
 
+        holder.share_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                shareReportIntent();
+
+
+            }
+        });
 
 
     }
+
+
+    private void shareReportIntent() {
+        Intent sendIntent = new Intent(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, getReport());
+        sendIntent.setType("text/plain");
+
+        Intent shareIntent =
+                Intent.createChooser(sendIntent,"Dictionary Word");
+
+        //we prevent app from crash if the intent has no destination.
+
+
+        if (sendIntent.resolveActivity( ((Activity) context).getPackageManager()) != null)
+            context.startActivity(shareIntent);
+    }
+
+
+    private String getReport() {
+        String englishW = words.getEnword();
+        String persionW = words.getFaword();
+        String report = englishW + persionW;
+        return report;
+    }
+
 
     @Override
     public Filter getFilter() {
@@ -150,7 +189,7 @@ public class WordsAdapter extends RecyclerView.Adapter<WordViewHolder>
                 } else {
                     Words tempItem = new Words(enword, faword);
 
-                    if (MainActivity.lang==false)
+                    if (MainActivity.lang == false)
                         databaseAccess.updateEnglish(tempItem);
                     else
                         databaseAccess.updatePersian(tempItem);
